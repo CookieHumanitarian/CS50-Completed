@@ -20,9 +20,6 @@ Computational thinking is the application of ideas from CS to problems
 
 
 How computers represent numbers:
-  
-  
-
 Same system as on the right. This is why:
 
 
@@ -38,9 +35,7 @@ Instead of allocating a bit to each emoji with a different skintone, Unicode ass
 
 
 How are emojis with multiple characters represented?
-  
-
-For this emoji, a set of bits is assigned to the left, another set to the right, and another set to the top. The device then assembles these complicated emojis using the same patterns of bits. By re-using, it saves space. 
+For emojis with multiple characters, a set of bits is assigned to the left, another set to the right, and another set to the top. The device then assembles these complicated emojis using the same patterns of bits. By re-using, it saves space. 
 
 
 
