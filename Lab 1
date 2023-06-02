@@ -1,0 +1,32 @@
+/* Had to program how many years it took to reach a certain population given user inputs. Had everything down except the loops portion at the end. Initially
+I used a do-while loop but it was inaccurate because if the user keyed in the same starting and ending population, it would return "Year = 1" when it should
+be "Year = 0". Finally figured it out in the shower to use a while loop instead and it fixed the problem. Below is my code in VS Studio
+
+Code:
+#include <stdio.h>
+#include <cs50.h>
+
+int main(void)
+{
+    int start; /asks user to key in a starting population and a target population. We need a number more than 9 as the population will be stagnant later otherwise
+    do
+    {
+        start = get_int("How many llamas do you have? ");
+    }
+    while (start < 9);
+
+    int end; //we want the target population to be more than the starting population
+    do
+    {
+        end = get_int("How many llamas do you want? ");
+    }
+    while (end < start); //the loop function to return back the number of years it would take to reach the target population given a starting population
+
+    int years = 0;
+
+    while (start < end)
+    {
+        start = start + start/3 - start/4;
+        years++;
+    }
+        printf("Years: %i\n", years);
