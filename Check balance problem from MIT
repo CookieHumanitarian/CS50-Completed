@@ -1,0 +1,31 @@
+/* Was doing the MIT Single Variable calculus and one of the questions asked me to calculate the account balance given that the
+"a checking account has balance f (t) = −5t2 + 60t + 120 dollars t months into the year, and that the derivative (rate of change) 
+of the account balance is given by f^1(t) = −10t + 60". During which month is the account balance greatest? What is the value of f^1(t) 
+at this time? Wanted to code the solution and after a while going through a few different loops, I finally got it. I feel like I am slowly appreciating
+memes stating how programmers take longer to code something than to just solve it naturally */
+
+#include <stdio.h>
+#include <cs50.h>
+
+int main(void)
+{
+    int i = 1; //normally i would start with i = 0 but months do not start at 0 so here's an exception
+    do
+    {
+        int square = i * i;
+        int balance = (-5 * square) + (60 * i) + 120;
+        int change = (-10 * i) + 60;
+        printf("Month: %i\nAccount balance: %i\nAccount change: %i\n\n", i, balance, change); // formatting the answers
+        i++;
+    }
+        while (i < 13);
+}
+
+/* Answers should output like:
+Month: 1
+Account balance: 175
+Account change: 50
+
+Month: 2
+Account balance: 220
+Account change: 40 */
