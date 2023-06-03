@@ -1,0 +1,25 @@
+Decided to do a repication of half on my own as I did not understand earlier that when you call a function in a printf, you can pass it values
+and later reassign those values in different names. My task was to do a replication of half where I take in bill, tax, and tip
+and calculate half of that amount.
+
+#include <stdio.h>
+#include <cs50.h>
+
+float half(float bill, float tax, float tip); //taking in the user's bill, tax, and tip 
+
+int main(void)
+{
+    float bill_payment = get_float("What is your bill? ");
+    float tax_percent = get_float("What is your tax? ");
+    float tip_percent = get_float("What is your tip? ");
+
+    printf("With the bill being %.2f, the tax being %.2f, and the tip being %.2f, your share is %.2f\n", bill_payment, tax_percent, tip_percent, half(bill_payment, tax_percent, tip_percent));
+}
+
+float half(float bill, float tax, float tip) //function calculating what my half of the bill would be given the bill, tax, and tip.
+{
+    float a = bill + (bill * (tax / 100));
+    float b = a + (a * (tip / 100));
+    float c = b / 2;
+    return c;
+} 
