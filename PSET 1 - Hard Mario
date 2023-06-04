@@ -1,0 +1,54 @@
+/* Decided to tackle this. Took a bit of trial and error but once with the framework of Easy Mario, it did not take that long. Am still a bit fuzzy on
+loops but i will sleep over it and think about this again tomorrow */
+
+#include <cs50.h>
+#include <stdio.h>
+
+int get_size(void);
+int print_grid(int bricks);
+int main(void)
+{
+    int height = get_size(); //gets an integer from 1 - 8
+
+    print_grid(height);
+}
+
+int get_size(void)
+{
+    int number;
+    do
+    {
+        number = get_int("Choose a number from 1 - 8: ");
+    }
+    while (number < 1 || number > 8);
+    return number;
+}
+
+int print_grid(int brick)//prints a grid depending on user input
+{
+    for (int i = 0; i < brick; i ++) // loops for the entire set. Returns after each iteration
+    {
+        for (int j = i; j < (brick - 1); j++) //prints space
+        {
+            printf(" ");
+        }
+
+        for (int k = 0; k <= i; k++) //prints hash
+        {
+            printf("#");
+        }
+
+        for (int space = 0; space < 2; space++) // space
+        {
+            printf(" ");
+        }
+
+        for (int m = 0; m <= i; m++) //prints hash
+        {
+            printf("#");
+        }
+
+        printf("\n");
+    }
+    return true;
+}
