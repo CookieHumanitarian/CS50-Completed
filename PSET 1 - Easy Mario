@@ -1,0 +1,46 @@
+/* Struggled for many hours on this one. I initially attempted this without looking at the walkthroughs but I could not crack the problem and eventually
+watched them for a clearer idea. After watching the walkthroughs, i realised that I intuitively knew what steps to take but because i did not write them 
+down, i fumbled in the dark a bit. After going into diffuse mode for an hour and coming back in the evening, i finally cracked it. I definitely learnt
+a lot more about loops and how it functions on an intuitively level now. Although not quite where i am a master but it will take time. Am going to attempt
+the hard mario problem now. Below is my solution:
+
+#include <cs50.h>
+#include <stdio.h>
+
+int get_size(void);
+int print_grid(int bricks);
+int main(void)
+{
+    int height = get_size(); //gets an integer from 1 - 8
+
+    print_grid(height);
+}
+
+int get_size(void)
+{
+    int number;
+    do
+    {
+        number = get_int("Choose a number from 1 - 8: ");
+    }
+    while (number < 1 || number > 8);
+    return number;
+}
+
+int print_grid(int brick)//prints a grid depending on user input
+{
+    for (int i = 0; i < brick; i ++) // loops for return kei
+    {
+        for (int j = i; j < (brick - 1); j++) //prints space
+        {
+            printf(" ");
+        }
+
+        for (int k = 0; k <= i; k++) //prints hash
+        {
+            printf("#");
+        }
+        printf("\n");
+    }
+    return true;
+}
