@@ -1,0 +1,100 @@
+/* This one was much easier than Mario. I had to write a program where given a number of cents, I had to write the change utilising the greedy algorithm.
+This helped me learned about global and local variables and how a value is updated within a while-loop. 
+
+#include <cs50.h>
+#include <stdio.h>
+
+int get_cents(void);
+int calculate_quarters(int cents);
+int calculate_dimes(int cents);
+int calculate_nickels(int cents);
+int calculate_pennies(int cents);
+
+int main(void)
+{
+    // Ask how many cents the customer is owed
+    int cents = get_cents();
+
+    // Calculate the number of quarters to give the customer
+    int quarters = calculate_quarters(cents);
+    cents = cents - quarters * 25;
+
+    // Calculate the number of dimes to give the customer
+    int dimes = calculate_dimes(cents);
+    cents = cents - dimes * 10;
+
+    // Calculate the number of nickels to give the customer
+    int nickels = calculate_nickels(cents);
+    cents = cents - nickels * 5;
+
+    // Calculate the number of pennies to give the customer
+    int pennies = calculate_pennies(cents);
+    cents = cents - pennies * 1;
+
+    // Sum coins
+    int coins = quarters + dimes + nickels + pennies;
+
+    // Print total number of coins to give the customer
+    printf(" You used a total of %i coins. You used %i quarters, %i dimes, %i nickels, and %i pennies\n", coins, quarters, dimes, nickels, pennies);
+}
+
+int get_cents(void) // get user input
+{
+    int cent;
+    do
+    {
+        cent = get_int("How many cents do you need? ");
+    }
+    while (cent < 0);
+    return cent;
+}
+
+int calculate_quarters(int cents) // subtract the quarter value from cents as long as cents is more or equal than quarters
+{
+    int quarter = 25;
+    int i = 0;
+
+    while (cents >= quarter)
+    {
+        cents = cents - quarter;
+        i++;
+    }
+    return i;
+}
+
+int calculate_dimes(int cents) // takes the remainder of cents after (any) subtraction from quarters and calculates the same thing
+{
+    int dime = 10;
+    int i = 0;
+
+    while (cents >= dime)
+    {
+        cents = cents - dime;
+        i++;
+    }
+    return i;
+}
+
+int calculate_nickels(int cents) // copy of the above code except that the values are changed for nickel
+{
+    int nickel = 5;
+    int i = 0;
+    while (cents >= nickel)
+    {
+        cents = cents - nickel;
+        i++;
+    }
+    return i;
+}
+
+int calculate_pennies(int cents) // after this stage, program will return how many coins we used in total
+{
+    int penny = 1;
+    int i = 0;
+    while (cents >= penny)
+    {
+        cents = cents - penny;
+        i++;
+    }
+    return i;
+}
