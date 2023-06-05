@@ -1,0 +1,151 @@
+//takes in user input (positive integer)
+//assigns each value in user's input to an alphabet (16 alphabets)
+//Calculate luhns algorithm
+//output be AMEX\n or MASTERCARD\n or VISA\n or INVALID\n using IF statements
+
+#include <cs50.h>
+#include <stdio.h>
+
+long multiply(long card);
+long credit_card(void);
+int main(void)
+{
+    long card = credit_card(); //gets credit card number from user
+    int Luhns_algo = multiply(card);
+
+    int thirteen = (card % 10000000000000) / 100000000000; //checking to see whether the first few numbers is AMEX, VISA or MASTER
+    int thirteen_visa = (card % 10000000000000) /
+                        1000000000000; //_visa as visa only starts with a single 4 digit and we need to account for that
+    int fourteen = (card % 100000000000000) / 1000000000000;
+    int fifteen = (card % 1000000000000000) / 10000000000000;
+    int sixteen = (card % 10000000000000000) / 100000000000000;
+    int sixteen_visa = (card % 10000000000000000) / 1000000000000000;
+
+    //whole bunch of if statements that check which number the card belongs to
+    if (Luhns_algo == true && (fifteen == 34 ||
+                               fifteen == 37)) //print output depending on starting number and whether it is valid/invalid
+    {
+        printf("Valid AMEX\n");
+    }
+    else if (Luhns_algo == true && (sixteen == 51 || sixteen == 52 || sixteen == 53 || sixteen == 54 || sixteen == 55))
+    {
+        printf("Valid MASTERCARD\n");
+    }
+    else if (Luhns_algo == true && (thirteen_visa == 4 || sixteen_visa == 4))
+    {
+        printf("Valid VISA\n");
+    }
+    else
+    {
+        printf("INVALID\n");
+    }
+
+}
+
+long credit_card(void)
+{
+    long i = get_long("What is your credit card number? ");
+    return i;
+}
+
+long multiply(long card)
+{
+    long one = (card % 10); //finding the modulus for each number in the credit card
+    long two = (card % 100) / 10 ;
+    long three = (card % 1000) / 100 ;
+    long four = (card % 10000) / 1000 ;
+    long five = (card % 100000) / 10000 ;
+    long six = (card % 1000000) / 100000 ;
+    long seven = (card % 10000000) / 1000000 ;
+    long eight = (card % 100000000) / 10000000 ;
+    long nine = (card % 1000000000) / 100000000 ;
+    long ten = (card % 10000000000) / 1000000000 ;
+    long eleven = (card % 100000000000) / 10000000000 ;
+    long twelve = (card % 1000000000000) / 100000000000 ;
+    long thirteen = (card % 10000000000000) / 1000000000000 ;
+    long fourteen = (card % 100000000000000) / 10000000000000 ;
+    long fifteen = (card % 1000000000000000) / 100000000000000 ;
+    long sixteen = (card % 10000000000000000) / 1000000000000000 ;
+
+    int two1 = (two * 2); //long process of getting single digits from each number above
+    int two2 = 0;
+    if (two1 > 9)
+    {
+        two2 = two1 % 10;
+        two1 /= 10;
+
+    }
+
+    int four1 = (four * 2);
+    int four2 = 0;
+    if (four1 > 9)
+    {
+        four2 = four1 % 10;
+        four1 /= 10;
+
+    }
+
+    int six1 = (six * 2);
+    int six2 = 0;
+    if (six1 > 9)
+    {
+        six2 = six1 % 10;
+        six1 /= 10;
+
+    }
+    int eight1 = (eight * 2);
+    int eight2 = 0;
+    if (eight1 > 9)
+    {
+        eight2 = eight1 % 10;
+        eight1 /= 10;
+
+    }
+    int ten1 = (ten * 2);
+    int ten2 = 0;
+    if (ten1 > 9)
+    {
+        ten2 = ten1 % 10;
+        ten1 /= 10;
+
+    }
+    int twelve1 = (twelve * 2);
+    int twelve2 = 0;
+    if (twelve1 > 9)
+    {
+        twelve2 = twelve1 % 10;
+        twelve1 /= 10;
+
+    }
+    int fourteen1 = (fourteen * 2);
+    int fourteen2 = 0;
+    if (fourteen1 > 9)
+    {
+        fourteen2 = fourteen1 % 10;
+        fourteen1 /= 10;
+
+    }
+    int sixteen1 = (sixteen * 2);
+    int sixteen2 = 0;
+    if (sixteen1 > 9)
+    {
+        sixteen2 = sixteen1 % 10;
+        sixteen1 /= 10;
+    }
+    //plugging in Luhn’s Algorithm
+    int addition = two1 + two2 + four1 + four2 + six1 + six2 + eight1 + eight2 + ten1 + ten2 + twelve1 + twelve2 + fourteen1
+                   + fourteen2 + sixteen1 + sixteen2 + one + three + five + seven + nine + eleven + thirteen + fifteen;
+    int final_result = addition % 10;
+
+
+    //seeing if the modulus of the final answer is 0 which means that it would be valid
+    if (final_result == 0)
+    {
+        return 1;
+    }
+    else if (final_result > 0)
+    {
+        return 0;
+    }
+    return 1;
+}
