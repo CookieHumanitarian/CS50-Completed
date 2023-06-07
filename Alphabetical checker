@@ -16,15 +16,15 @@ int main(void)
         {
             if (word[i] >= 'A' && word[i] <= 'Z') //if the letter is capitalised, subtract 32 to get the smaller letter
             {
-               word[i] -= - 32;
+               word[i] += 32;
             }
 
-            if (word[i] < word[i - 1] ) //if the letter [i] int is smaller than letter [i - 1], add to j
+            if (word[i] < word[i - 1] ) //if the current letter is smaller than the previous letter, add to j
             {
                 j++;
             }
         }
-        if (j == 0) //if j is more than 0 means that 
+        if (j == 0) //if j is more than 0 means that the string are not alphabetical
         {
             printf("True");
         }
