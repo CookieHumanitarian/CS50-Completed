@@ -1,0 +1,36 @@
+/* Wanted to post this as this question is one of my first forays in arrays. I had to check if a lowercase string's characters are in alphabetical order
+and if yes print yes, if no print no. I struggled quite a bit with this and I know that this isn't the most elegant solution but i figured out a way to
+finally solve the issue. Am quite proud so here it is*/
+
+#include <cs50.h>
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+int main(void)
+{
+    string word = get_string("Lowercase: "); //get string from user
+
+    int j = 0;
+        for (int i = 0; i < strlen(word); i++ )
+        {
+            if (word[i] >= 'A' && word[i] <= 'Z') //if the letter is capitalised, subtract 32 to get the smaller letter
+            {
+               word[i] -= - 32;
+            }
+
+            if (word[i] < word[i - 1] ) //if the letter [i] int is smaller than letter [i - 1], add to j
+            {
+                j++;
+            }
+        }
+        if (j == 0) //if j is more than 0 means that 
+        {
+            printf("True");
+        }
+        else
+        {
+            printf("False");
+        }
+        printf("\n");
+    }
