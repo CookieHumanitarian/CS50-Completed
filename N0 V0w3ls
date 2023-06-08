@@ -1,7 +1,9 @@
 /* I had to write a program from scratch that replaces every vowel with a number. Took me about an hour as my loop initially did not work and I finally
 figured out that it was due to me setting it to the arc value which would only loop once and not loop through the length of the word. This task also made
 me appreciate using command line arguments and how to use them in functions. I was stuck for a bit with the syntax of using command line arguments but i 
-finally go it */
+finally go it
+
+At the bottom is the same code but instead of using if-statements, I used the switch statement */
 
 #include <cs50.h>
 #include <string.h>
@@ -48,3 +50,57 @@ string replace(string word[1]) //function to replace each vowel with a number
     }
     return word[1];
 }
+
+/* Same as the above but with switch statements */
+// Write a function to replace vowels with numbers
+// Get practice with strings
+// Get practice with command line
+// Get practice with switch
+
+#include <cs50.h>
+#include <string.h>
+#include <stdio.h>
+
+string replace(string word[1]);
+int main(int argc, string argv[])
+{
+    if (argc != 2 || argc > 3) //takes in only 1 command line argument
+    {
+        printf("Do again with 1 input\n");
+        return 1;
+    }
+
+
+    printf("%s", replace(argv));
+    printf("\n");
+}
+
+
+//Try this again but with a SWITCH statement
+string replace(string word[1])
+{
+    int k = strlen(word[1]);
+    for (int i = 0; i < k; i++)
+    {
+        switch (word[1][i])
+    {
+        case 97:
+        word[1][i] = '6';
+        break;
+
+        case 101:
+        word[1][i] = '3';
+        break;
+
+        case 105:
+        word[1][i] = '1';
+        break;
+
+        case 111:
+        word[1][i] = '0';
+        break;
+    }
+    }
+    return word[1];
+}
+
