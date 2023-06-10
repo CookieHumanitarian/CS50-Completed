@@ -1,0 +1,81 @@
+/* Good practice in abstracting the problem before coding. I had to take in a command-line argument which was a 26 alphabet key and to cipher a 
+text based on that key. This built on the principles of the Caesar problem i solved above */
+
+//cipher text is the text that user inputs (so [1][1 - 26])
+//replace each word by subtracting it from the lowest word and accessing that number from the array
+//do this for capitalised and non-capitalised letters
+
+#include <cs50.h>
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main(int argc, string argv[])
+{
+    if (argc != 2) //only takes in 1 argument
+    {
+        printf("Error:\n");
+        return 1;
+    }
+
+    for (int i = 0; i < 25; i++)//looks through each character and checks it below
+    {
+        char c = argv[1][i];
+
+        for (int j = i + 1; j < 26; j++) //check whether there's any duplicates
+        {
+            if (c == argv[1][j])
+            {
+                printf("Error:\n");
+                return 1;
+            }
+
+            if (isalpha(c) == 0) //checks whether it's an alphabet
+            {
+                printf("Error:\n");
+                return 1;
+            }
+        }
+    }
+
+    string cla_length = argv[1];
+    if (strlen(cla_length) != 26) //checks to see whether the user enters 26 characters for the key
+    {
+        printf("Error:\n");
+        return 1;
+    }
+
+    string sentence = get_string("plaintext: ");  //gets plaintext from user
+    int s_length = strlen(sentence);
+    printf("ciphertext: ");
+
+    for (int i = 0; i < s_length; i++) //loops through each character in the plaintext
+    {
+        char c = sentence[i];
+        if (islower(c) != 0) //if the character is lowercase, it loops here
+        {
+            int n = c - 97; //subtract from the the value of lowercase a to find its position in the alphabet key
+            char k = tolower(argv[1][n]);
+            printf("%c", k);
+        }
+
+        if (isupper(c) != 0) //if the character is uppercase, it loops here
+        {
+            int n = c - 65;
+            char k = toupper(argv[1][n]); //same principle as the above
+            printf("%c", k);
+        }
+
+        if (c == ' ' || ispunct(c) != 0) //checks for punctuation and leaves it untouch
+        {
+            printf("%c", c);
+        }
+
+        if (isdigit(c) != 0) //prints out digits untouched
+        {
+            printf("%c", c);
+        }
+    }
+
+    printf("\n");
+}
