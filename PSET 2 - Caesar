@@ -1,0 +1,73 @@
+/* Had to create a program that will take in a user's input and output a cipher text using the Caesar Cipher. The user can input 1 command-line argument.
+I had the overall structure down but i struggled with getting the program to check whether each character in the CLA is a digit. Eventually, found
+out that I had to loop through each character and check for it.
+
+#include <cs50.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+int main(int argc, string argv[])
+{
+    if (argc != 2) //only accepts 1 CLA
+    {
+        printf("Usage: ./caesar key\n");
+        return 1;
+    }
+
+    int key = atoi(argv[1]); //gets the string from user and turns it into an int
+
+
+    if (key < 0) //the CLA must be a positive integer
+    {
+        printf("Must be a positive integer\n");
+        return 1;
+    }
+
+
+    for (int i = 0, m = strlen(argv[1]); i < m; i++)//THIS TOOK ME SO LONG TO CHECK FOR ALPHABETS
+    {
+        char c = argv[1][i];
+        if (isalpha(c) != 0)
+        {
+            printf("Usage: ./caesar key\n");
+            return 1;
+        }
+    }
+
+
+
+    //alphabet and just 1 argument
+
+    string plain = get_string("plaintext: \n"); //gets plaintext from user
+    int plain_length = strlen(plain);
+
+    printf("ciphertext: ");
+    for (int i = 0; i < plain_length; i++)
+    {
+
+        int c = plain[i];
+        if (islower(plain[i]) != 0) //If it's lower
+        {
+            c += key;
+            while (c > 122)
+            {
+                c -= 26;
+            }
+        }
+
+        if (isupper(plain[i]) != 0)
+        {
+            c += key;
+            while (c > 90)
+            {
+                c -= 26;
+            }
+        }
+
+        printf("%c", c);
+    }
+    printf("\n");
+    return 0;
+}
