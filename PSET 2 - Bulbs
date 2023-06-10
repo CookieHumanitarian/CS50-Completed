@@ -1,0 +1,74 @@
+/* Had to code a string to 8 bit binary. This was tough for me to abstract at first but after a few hours, I finally understood it and the code just fell
+naturally. Am starting to make it a habit to abstract the problem / pseudocode before tackling the problem */
+
+#include <cs50.h>
+#include <stdio.h>
+#include <string.h>
+
+const int BITS_IN_BYTE = 8;
+
+void print_bulb(int bit);
+
+int main(void)
+{
+    string sentence = get_string("Sentence: \n"); //gets input from user
+    int sentence_length = strlen(sentence); //gets character length
+    int d = BITS_IN_BYTE * sentence_length;
+    int backwards[d]; //should hold 8 characters times number of characters
+
+
+    for (int i = 0; i < sentence_length; i++) //goes through each character in the string
+    {
+        int z = 0;
+        int m = 0;
+        do
+        {
+            int remainder = (int) sentence[i] % 2; //checks to see whether it divdes evenly by 2
+            if (remainder == 0)
+            {
+
+                backwards[z] = 0;
+                m++;
+                z++;
+
+            }
+            else
+            {
+                backwards[z] = 1;
+                m++;
+                z++;
+            }
+            sentence[i] = sentence[i] / 2;
+        }
+        while (sentence[i] > 0);
+
+        do
+        {
+            backwards[z] = 0;
+            m++;
+            z++;
+        }
+        while (m < 9); //adds extra 0's if the string is already formed until it reached 8 bits
+
+        for (int f = 7; f >= 0; f--) //print backwards to get from front to back
+        {
+            print_bulb(backwards[f]);
+        }
+        printf("\n");
+    }
+
+}
+
+void print_bulb(int bit) //prints the symbols of 0s and 1s
+{
+    if (bit == 0)
+    {
+        // Dark emoji
+        printf("\U000026AB");
+    }
+    else if (bit == 1)
+    {
+        // Light emoji
+        printf("\U0001F7E1");
+    }
+}
