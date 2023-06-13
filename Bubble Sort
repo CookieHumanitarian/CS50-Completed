@@ -1,0 +1,91 @@
+/* This week is my first introduction to recursion and boy am I struggling to get my head around it. Watched a few youtube videos but I am still 
+not as confident. 
+
+Unrelated but this is my first time implementing bubble sort on an array to arrange it in descending order. The code is a bit long winded but it worked for me.
+Was stunned initially as I was wondering how could my function return void but yet alter the array. I then remembered that when a function calls 
+an array, they are not receiving a copy like variables but they are given the actual copy of the array. Good stuff */
+
+// Practice working with structs
+// Practice applying sorting algorithms
+
+#include <cs50.h>
+#include <stdio.h>
+
+#define NUM_CITIES 10
+
+typedef struct
+{
+    string city;
+    int temp;
+}
+avg_temp;
+
+avg_temp temps[NUM_CITIES];
+
+void sort_cities(void);
+
+int main(void)
+{
+    temps[0].city = "Austin";
+    temps[0].temp = 97;
+
+    temps[1].city = "Boston";
+    temps[1].temp = 82;
+
+    temps[2].city = "Chicago";
+    temps[2].temp = 85;
+
+    temps[3].city = "Denver";
+    temps[3].temp = 90;
+
+    temps[4].city = "Las Vegas";
+    temps[4].temp = 105;
+
+    temps[5].city = "Los Angeles";
+    temps[5].temp = 82;
+
+    temps[6].city = "Miami";
+    temps[6].temp = 97;
+
+    temps[7].city = "New York";
+    temps[7].temp = 85;
+
+    temps[8].city = "Phoenix";
+    temps[8].temp = 107;
+
+    temps[9].city = "San Francisco";
+    temps[9].temp = 66;
+
+    sort_cities();
+
+    printf("\nAverage July Temperatures by City\n\n");
+
+    for (int i = 0; i < NUM_CITIES; i++)
+    {
+        printf("%s: %i\n", temps[i].city, temps[i].temp);
+    }
+}
+
+void sort_cities(void)
+{
+    int k = 1; //giving k a random number 
+    while (k != 0) 
+    {
+        k = 0;
+            for (int i = 0; i < NUM_CITIES; i++)
+            {
+
+                int swap = temps[i].temp;
+                string name_swap = temps[i].city;
+
+                if (temps[i].temp < temps[i + 1].temp) //basically if array[0] is lesser than array[1], swap them and raise k to 0. Keep repeating this until there are no swaps which means that the list is sorted
+                    {
+                        temps[i].temp = temps[i + 1].temp;
+                        temps[i].city = temps[i + 1].city;
+                        temps[i + 1].temp = swap;
+                        temps[i + 1].city = name_swap;
+                        k++;
+                    }
+            }
+        }
+}
