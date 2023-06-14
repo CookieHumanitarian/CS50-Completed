@@ -1,0 +1,116 @@
+/* One of the more straightforward task. I just had to calculate the number of votes in a struct and print out the winner. I think I am getting quite
+comfortable manipulating arrays at this level but I know the difficulty is gonna ramp up soon */
+
+#include <cs50.h>
+#include <stdio.h>
+#include <string.h>
+#include <strings.h>
+
+// Max number of candidates
+#define MAX 9
+
+// Candidates have name and vote count
+typedef struct
+{
+    string name;
+    int votes;
+}
+candidate;
+
+// Array of candidates
+candidate candidates[MAX];
+
+// Number of candidates
+int candidate_count;
+
+// Function prototypes
+bool vote(string name);
+void print_winner(void);
+
+int main(int argc, string argv[])
+{
+    // Check for invalid usage
+    if (argc < 2)
+    {
+        printf("Usage: plurality [candidate ...]\n");
+        return 1;
+    }
+
+    // Populate array of candidates
+    candidate_count = argc - 1;
+    if (candidate_count > MAX)
+    {
+        printf("Maximum number of candidates is %i\n", MAX);
+        return 2;
+    }
+    for (int i = 0; i < candidate_count; i++)
+    {
+        candidates[i].name = argv[i + 1];
+        candidates[i].votes = 0;
+    }
+
+    int voter_count = get_int("Number of voters: ");
+
+    // Loop over all voters
+    for (int i = 0; i < voter_count; i++)
+    {
+        string name = get_string("Vote: ");
+
+        // Check for invalid vote
+        if (!vote(name))
+        {
+            printf("Invalid vote.\n");
+        }
+    }
+
+    // Display winner of election
+    print_winner();
+}
+
+// Update vote totals given a new vote
+bool vote(string name)
+{
+//for true candidate
+    for (int i = 0; i < candidate_count; i++) //goes through each candidate and compares with name
+    {
+        if (strcasecmp(name, candidates[i].name) == 0)
+        {
+            candidates[i].votes += 1;
+            return true;
+        }
+
+    }
+    return false; //returns false if cant find candidate name
+}
+
+// Print the winner (or winners) of the election
+void print_winner(void)
+{
+//find a loop for the largest value first
+//then another loop to compare whether any other candidates has the same value
+
+    for (int i = 0; i < candidate_count; i++)
+    {
+        if (candidates[0].votes < candidates[i + 1].votes) //put the candidate with the most votes at the 0
+        {
+            int v_temp = candidates[0].votes;
+            string n_temp = candidates[0].name;
+
+            candidates[0].votes = candidates[i + 1].votes;
+            candidates[0].name = candidates[i + 1].name;
+
+            candidates[i + 1].votes = v_temp;
+            candidates[i + 1].name = n_temp;
+        }
+    }
+    printf("%s\n", candidates[0].name);
+
+    //checks the array again for any duplicate scores and prints them
+    for (int l = 1; l < candidate_count; l++)
+    {
+        if (candidates[0].votes == candidates[l].votes)
+        {
+            printf("%s\n", candidates[l].name);
+        }
+    }
+}
