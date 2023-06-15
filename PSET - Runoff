@@ -2,6 +2,8 @@
 but this took me about a day to complete. Reading other people's code after completion, I can see that my code is a bit bloated but i will not trim it and
 what you see below is the complete, albeit bloated code */
 
+//Edit: Found a fatal error in determining the minimum vote count in line 207 onwards. Amended it to account for all candidates
+
 #include <cs50.h>
 #include <stdio.h>
 #include <strings.h>
@@ -204,12 +206,12 @@ int find_min(void)
 {
     // TODO
     int lowest = voter_count;
-    for (int i = 0; i < candidate_count - 1; i++)
+    for (int i = 0; i < candidate_count; i++)
     {
         //finding the lowest number of votes by comparing with all candidates who are not eliminated
-        if (lowest > candidates[i + 1].votes && candidates[i + 1].eliminated == false)
+        if (lowest > candidates[i].votes && candidates[i].eliminated == false)
         {
-            lowest = candidates[i + 1].votes;
+            lowest = candidates[i].votes;
         }
     }
     return lowest;
