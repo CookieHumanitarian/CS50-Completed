@@ -1,0 +1,56 @@
+/* One of the toughest PSET's I have done. I had to learn all about fopen() and fclose() on my own (videos, documentation, etc). I realised that I did not 
+need to specify the size of fopen() and that for sprintf() i do need to. Was quite tough and I struggled a lot. Even now, I am not 100% confident but I will
+look back at this code */
+
+//I had to read from a memory card and recover each JPEGs to a new file
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+typedef uint8_t BYTE;
+
+int main(int argc, char *argv[])
+{
+    if (argc != 2)
+    {
+        printf("Please input 1 CLA: \n");
+        return 1;
+    }
+
+    FILE *file = fopen(argv[1], "r");
+    if (file == NULL)
+    {
+        printf("Error\n");
+        return 1;
+    }
+
+    BYTE buffer[512];
+    int count = 0;
+    FILE *file_p = NULL;
+    char filename[8];
+
+    while (fread(buffer, 512, 1, file) == 1) //reads file until it terminates
+    {
+        if (buffer[0] == 0xff && buffer[1] == 0xd8 && buffer[2] == 0xff && ((buffer[3] & 0xf0) == 0xe0)) //if start of new JPEG
+        {
+            if (count > 0) //closes every file after the first
+            {
+                fclose(file_p);
+            }
+
+            sprintf(filename, "%03i.jpg", count); //renames the filename
+            file_p = fopen(filename, "w");//opens the new filename
+            count++;
+        }
+
+        if (file_p != NULL)//checks to see whether the file pointer points to an actual file
+        {
+            fwrite(buffer, 512, 1, file_p);
+        }
+    }
+
+    fclose(file_p);
+    fclose(file);
+
+}
