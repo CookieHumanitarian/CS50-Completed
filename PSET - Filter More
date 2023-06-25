@@ -1,0 +1,221 @@
+/* This was really tought. Basically it is similar to Filter Less but I had to implement 1 new filter which was edge detection using the Sobel ooperator. This
+was quite challenging but I feel like i have gotten a deeper undertanding using for loops and nesting them in between */
+
+#include "helpers.h"
+#include <math.h>
+
+#define Blue 0
+#define Green 1
+#define Red 2
+
+// Convert image to grayscale
+void grayscale(int height, int width, RGBTRIPLE image[height][width])
+{
+    //take the average of each rgp value and apply it to each RGB value
+    //Divide sum by 3.0 for more accurate results
+    //make sure the value isnt larger than 255
+    for (int i = 0, h = height; i < h; i++) //iterates over columns
+    {
+        for (int j = 0, w = width; j < w; j++) //iterates over rows
+        {
+            //finds average of each pixel
+            int colour = round((image[i][j].rgbtBlue + image[i][j].rgbtGreen + image[i][j].rgbtRed) / 3.0);
+            //makes sure RGB values does not exceed 255;
+            if (colour > 255)
+            {
+                colour = 255;
+            }
+            image[i][j].rgbtBlue = colour;
+            image[i][j].rgbtGreen = colour;
+            image[i][j].rgbtRed = colour;
+        }
+    }
+    return;
+}
+
+// Reflect image horizontally
+void reflect(int height, int width, RGBTRIPLE image[height][width])
+{
+    //Copy to a buffer and read it backwards?
+    for (int i = 0, h = height; i < h; i++) //iterates over columns
+    {
+        int f = width - 1; //gets last number in the array
+        int j = 0;  //gets first number in an array
+
+        //this condition means that as soon as the first number overtakes the last number, the function should stop swapping values
+        while (j < f)
+        {
+            //this loop swaps the first and last values in an array row
+            int bufferB = 0;
+            int bufferG = 0;
+            int bufferR = 0;
+
+            bufferB = image[i][j].rgbtBlue;
+            bufferG = image[i][j].rgbtGreen;
+            bufferR = image[i][j].rgbtRed;
+
+            image[i][j].rgbtBlue = image[i][f].rgbtBlue;
+            image[i][j].rgbtGreen = image[i][f].rgbtGreen;
+            image[i][j].rgbtRed = image[i][f].rgbtRed;
+
+            image[i][f].rgbtBlue = bufferB;
+            image[i][f].rgbtGreen = bufferG;
+            image[i][f].rgbtRed = bufferR;
+
+            f--;
+            j++;
+        }
+    }
+    return;
+}
+
+int get_colour(int i, int j, int height, int width, RGBTRIPLE image[height][width], int colour)
+{
+    int sum = 0;
+    float divide = 0.0;
+    for (int k = i - 1; k <= i + 1; k++)
+    {
+        for (int l = j - 1; l <= j + 1; l++)
+        {
+            if (k < 0  || l < 0 || k >= height || l >= height)
+            {
+                continue;
+            }
+
+            if (colour == Blue)
+            {
+                sum += image[k][l].rgbtBlue;
+                            divide++;
+
+            }
+
+            else if (colour == Green)
+            {
+                sum += image[k][l].rgbtGreen;
+                            divide++;
+
+            }
+
+            else
+            {
+                sum += image[k][l].rgbtRed;
+                            divide++;
+
+
+            }
+        }
+    }
+    return (round(sum / divide));
+}
+
+// Blur image
+
+void blur(int height, int width, RGBTRIPLE image[height][width])
+{
+    RGBTRIPLE copy[height][width];
+    for (int row = 0; row < height; row++)
+    {
+        for (int column = 0; column < width; column++)
+        {
+            copy[row][column] = image[row][column];
+        }
+    }
+
+    for (int row = 0; row < height; row++)
+    {
+        for (int column = 0; column < width; column++)
+        {
+            image[row][column].rgbtBlue = get_colour(row, column, height, width, copy, Blue);
+            image[row][column].rgbtGreen = get_colour(row, column, height, width, copy, Green);
+            image[row][column].rgbtRed = get_colour(row, column, height, width, copy, Red);
+        }
+    }
+}
+
+// Detect edges
+void edges(int height, int width, RGBTRIPLE image[height][width])
+{
+    //create an array copy
+    //create an array for Gx and Gy
+    //multiply each value with Gx and Gy and square root
+
+    RGBTRIPLE temp[height][width];
+
+    //initalise the Sobel's operator
+    int Gx[3][3] = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
+    int Gy[3][3] = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
+
+    for (int row = 0; row < height; row++) //iterates through rows
+    {
+        for (int column = 0; column < width; column++) //ietrates through columns
+        {
+            //prepare variables for each colour
+            int Gx_r = 0;
+            int Gy_r = 0;
+            int Gx_g = 0;
+            int Gy_g = 0;
+            int Gx_b = 0;
+            int Gy_b = 0;
+
+            for (int i = -1; i < 2; i++) //for 1 row before and after
+            {
+
+                for (int j = -1; j < 2; j++) //for 1 column before and after
+                {
+                    //to check if it's out of bounds
+                    if (row + i < 0 || row + i >= height || column + j < 0 || column + j >= width)
+                    {
+                        continue;
+                    }
+
+                    //else, adds up everything
+                    Gx_r += image[row + i][column + j].rgbtRed * Gx[i + 1][j + 1];
+                    Gy_r += image[row + i][column + j].rgbtRed * Gy[i + 1][j + 1];
+                    Gx_g += image[row  + i][column  + j].rgbtGreen * Gx[i + 1][j + 1];
+                    Gy_g += image[row + i][column + j].rgbtGreen * Gy[i + 1][j + 1];
+                    Gx_b += image[row + i][column + j].rgbtBlue * Gx[i + 1][j + 1];
+                    Gy_b += image[row + i][column + j].rgbtBlue * Gy[i + 1][j + 1];
+                }
+
+            }
+            //after going through the 3x3 grid above, apply Sobel's formula
+            int sum_r = round(sqrt((Gx_r * Gx_r) + (Gy_r * Gy_r)));
+            int sum_g = round(sqrt((Gx_g * Gx_g) + (Gy_g * Gy_g)));
+            int sum_b = round(sqrt((Gx_b * Gx_b) + (Gy_b * Gy_b)));
+
+            //cap values at 255 due to that being the max of RGB values
+            if (sum_r > 255)
+            {
+                sum_r = 255;
+            }
+
+            if (sum_b > 255)
+            {
+                sum_b = 255;
+            }
+
+            if (sum_g > 255)
+            {
+                sum_g = 255;
+            }
+
+            //store the values in a temp
+            temp[row][column].rgbtRed = sum_r;
+            temp[row][column].rgbtGreen = sum_g;
+            temp[row][column].rgbtBlue = sum_b;
+        }
+    }
+
+    //transfer values from temp to the original image to show edges
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            image[i][j].rgbtBlue = temp[i][j].rgbtBlue;
+            image[i][j].rgbtGreen = temp[i][j].rgbtGreen;
+            image[i][j].rgbtRed = temp[i][j].rgbtRed;
+        }
+    }
+
+    return;
+}
