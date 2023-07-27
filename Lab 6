@@ -12,16 +12,15 @@ N = 1000
 
 
 def main():
-
     # Ensure correct usage
     if len(sys.argv) != 2:
         sys.exit("Usage: python tournament.py FILENAME")
 
     teams = []
     # TODO: Read teams into memory from file
-    #access file with sys argv 1
-    #dict reader team and rating
-    #make sure rating is an int as dictreader reads a string
+    # access file with sys argv 1
+    # dict reader team and rating
+    # make sure rating is an int as dictreader reads a string
 
     with open(sys.argv[1]) as file:
         outputs = csv.DictReader(file)
@@ -31,17 +30,17 @@ def main():
 
     counts = {}
     # TODO: Simulate N tournaments and keep track of win counts
-    #call the simulate tourn function N times and keep track of winners
-    #get return value and have a key value of count if retunr value is in count dict
-    #return value of stimulate tournament is team
-    winner = simulate_tournament(teams)
 
-    wins = 0
-    if winner not in counts:
-        counts[winner] = wins
-    if winner in counts:
-        counts[winner] += 1
+    # call the simulate tourn function N times and keep track of winners
+    # get return value and have a key value of count if retunr value is in count dict
+    # return value of stimulate tournament is team
 
+    for _ in range(N):
+        winner = simulate_tournament(teams)
+        if winner in counts:
+            counts[winner] += 1
+        else:
+            counts[winner] = 1
 
     # Print each team's chances of winning, according to simulation
     for team in sorted(counts, key=lambda team: counts[team], reverse=True):
@@ -73,7 +72,14 @@ def simulate_round(teams):
 def simulate_tournament(teams):
     """Simulate a tournament. Return name of winning team."""
     # TODO
+    # pass into simulate rounds. Recursion until i get back 1 team?
+
+    while len(teams) > 1:
+        teams = simulate_round(teams)
+
+    return teams[0]["team"]
 
 
 if __name__ == "__main__":
     main()
+
