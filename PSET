@@ -1,0 +1,41 @@
+#PSET 1 - Super simple program where i accept user input and print hello {name}
+
+def main():
+    name = input("What is your name: ")
+    print("hello", name.capitalize())
+
+
+main()
+
+#2. A callback to PSET 1 where i had to print mario blocks on either side given user input. A bit fun to see how far and fast I have come since struggling
+# on this 2 months ago
+
+# TODO
+
+
+def main():
+    while True:
+        user = input("Height: ")
+        try:
+            height = int(user)
+        except ValueError:
+            print("Invalid input")
+        else:
+            if height < 1 or height > 8:
+                pass
+            else:
+                break
+
+    # prints left side
+    # input - n for that loop
+
+    for bricks in range(height):
+        space = height - int(bricks) - 1
+        print((" " * space) + ("#" * (bricks + 1)), end="")
+        print((" " * 2) + ("#" * (bricks + 1)))
+
+
+main()
+
+#3. 
+
