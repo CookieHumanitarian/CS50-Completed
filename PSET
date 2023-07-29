@@ -37,5 +37,52 @@ def main():
 
 main()
 
-#3. 
+#3. Had to validate a credit card using Luhns algorithm. A call back to PSET 1
+
+# TODO
+
+import sys
+
+def main():
+
+    number = get_number()
+    print(luhn(number))
+
+
+
+def get_number():
+    while True:
+        number = input("Number: ")
+        if len(number) != 3 and len(number) != 15 and len(number) != 16:
+            print("Wrong number")
+        else:
+            break
+
+    return number
+
+def luhn(number):
+
+    last = 0
+    second_last = 0
+    card = int(number)
+
+    for _ in number:
+        last += card % 10
+        card //= 10
+
+        second_last += ((card//10) * 2)
+        card //= 10
+
+    sum = last + second_last
+    sum = sum % 10
+
+    if sum != 0:
+        sys.exit("Invalid card")
+
+    if len(number) == 13:
+        if number[:1] == 4
+
+
+main()
+
 
