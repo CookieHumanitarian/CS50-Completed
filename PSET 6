@@ -107,4 +107,41 @@ def luhn(number):
 
 main()
 
-#4. 
+#4. Had to get the grade of a text using Coleman-Liau's index
+
+# TODO
+import re
+
+
+def main():
+    text = input("Text: ").strip()
+
+    sentence = re.split("\!|\?|\.", text)
+    sentences = len(sentence) - 1
+    word = text.split(" ")
+    words = len(word)
+    letters = 0
+    for t in text:
+        if t.isalpha():
+            letters += 1
+
+    print(coleman_index(sentences, words, letters))
+    print(f"sentences: {sentences} \nwords: {words} \nletters: {letters}")
+
+
+def coleman_index(sentences, words, letters):
+    L = int(letters) / int(words) * 100
+    S = int(sentences) / int(words) * 100
+
+    final = round(0.0588 * L - 0.296 * S - 15.8)
+    if final > 16:
+        return f"Grade: 16+"
+    elif final < 1:
+        return f"Before Grade 1"
+    else:
+        return f"Grade: {final}"
+
+
+main()
+
+
