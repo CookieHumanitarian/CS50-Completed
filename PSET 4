@@ -1,0 +1,378 @@
+/* This was really tough. Basically it is similar to Filter Less but I had to implement 1 new filter which was edge detection using the Sobel ooperator. This
+was quite challenging but I feel like i have gotten a deeper undertanding using for loops and nesting them in between */
+
+#include "helpers.h"
+#include <math.h>
+
+#define Blue 0
+#define Green 1
+#define Red 2
+
+// Convert image to grayscale
+void grayscale(int height, int width, RGBTRIPLE image[height][width])
+{
+    //take the average of each rgp value and apply it to each RGB value
+    //Divide sum by 3.0 for more accurate results
+    //make sure the value isnt larger than 255
+    for (int i = 0, h = height; i < h; i++) //iterates over columns
+    {
+        for (int j = 0, w = width; j < w; j++) //iterates over rows
+        {
+            //finds average of each pixel
+            int colour = round((image[i][j].rgbtBlue + image[i][j].rgbtGreen + image[i][j].rgbtRed) / 3.0);
+            //makes sure RGB values does not exceed 255;
+            if (colour > 255)
+            {
+                colour = 255;
+            }
+            image[i][j].rgbtBlue = colour;
+            image[i][j].rgbtGreen = colour;
+            image[i][j].rgbtRed = colour;
+        }
+    }
+    return;
+}
+
+// Reflect image horizontally
+void reflect(int height, int width, RGBTRIPLE image[height][width])
+{
+    //Copy to a buffer and read it backwards?
+    for (int i = 0, h = height; i < h; i++) //iterates over columns
+    {
+        int f = width - 1; //gets last number in the array
+        int j = 0;  //gets first number in an array
+
+        //this condition means that as soon as the first number overtakes the last number, the function should stop swapping values
+        while (j < f)
+        {
+            //this loop swaps the first and last values in an array row
+            int bufferB = 0;
+            int bufferG = 0;
+            int bufferR = 0;
+
+            bufferB = image[i][j].rgbtBlue;
+            bufferG = image[i][j].rgbtGreen;
+            bufferR = image[i][j].rgbtRed;
+
+            image[i][j].rgbtBlue = image[i][f].rgbtBlue;
+            image[i][j].rgbtGreen = image[i][f].rgbtGreen;
+            image[i][j].rgbtRed = image[i][f].rgbtRed;
+
+            image[i][f].rgbtBlue = bufferB;
+            image[i][f].rgbtGreen = bufferG;
+            image[i][f].rgbtRed = bufferR;
+
+            f--;
+            j++;
+        }
+    }
+    return;
+}
+
+int get_colour(int i, int j, int height, int width, RGBTRIPLE image[height][width], int colour)
+{
+    int sum = 0;
+    float divide = 0.0;
+    for (int k = i - 1; k <= i + 1; k++)
+    {
+        for (int l = j - 1; l <= j + 1; l++)
+        {
+            if (k < 0  || l < 0 || k >= height || l >= height)
+            {
+                continue;
+            }
+
+            if (colour == Blue)
+            {
+                sum += image[k][l].rgbtBlue;
+                            divide++;
+
+            }
+
+            else if (colour == Green)
+            {
+                sum += image[k][l].rgbtGreen;
+                            divide++;
+
+            }
+
+            else
+            {
+                sum += image[k][l].rgbtRed;
+                            divide++;
+
+
+            }
+        }
+    }
+    return (round(sum / divide));
+}
+
+// Blur image
+
+void blur(int height, int width, RGBTRIPLE image[height][width])
+{
+    RGBTRIPLE copy[height][width];
+    for (int row = 0; row < height; row++)
+    {
+        for (int column = 0; column < width; column++)
+        {
+            copy[row][column] = image[row][column];
+        }
+    }
+
+    for (int row = 0; row < height; row++)
+    {
+        for (int column = 0; column < width; column++)
+        {
+            image[row][column].rgbtBlue = get_colour(row, column, height, width, copy, Blue);
+            image[row][column].rgbtGreen = get_colour(row, column, height, width, copy, Green);
+            image[row][column].rgbtRed = get_colour(row, column, height, width, copy, Red);
+        }
+    }
+}
+
+// Detect edges
+void edges(int height, int width, RGBTRIPLE image[height][width])
+{
+    //create an array copy
+    //create an array for Gx and Gy
+    //multiply each value with Gx and Gy and square root
+
+    RGBTRIPLE temp[height][width];
+
+    //initalise the Sobel's operator
+    int Gx[3][3] = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
+    int Gy[3][3] = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
+
+    for (int row = 0; row < height; row++) //iterates through rows
+    {
+        for (int column = 0; column < width; column++) //ietrates through columns
+        {
+            //prepare variables for each colour
+            int Gx_r = 0;
+            int Gy_r = 0;
+            int Gx_g = 0;
+            int Gy_g = 0;
+            int Gx_b = 0;
+            int Gy_b = 0;
+
+            for (int i = -1; i < 2; i++) //for 1 row before and after
+            {
+
+                for (int j = -1; j < 2; j++) //for 1 column before and after
+                {
+                    //to check if it's out of bounds
+                    if (row + i < 0 || row + i >= height || column + j < 0 || column + j >= width)
+                    {
+                        continue;
+                    }
+
+                    //else, adds up everything
+                    Gx_r += image[row + i][column + j].rgbtRed * Gx[i + 1][j + 1];
+                    Gy_r += image[row + i][column + j].rgbtRed * Gy[i + 1][j + 1];
+                    Gx_g += image[row  + i][column  + j].rgbtGreen * Gx[i + 1][j + 1];
+                    Gy_g += image[row + i][column + j].rgbtGreen * Gy[i + 1][j + 1];
+                    Gx_b += image[row + i][column + j].rgbtBlue * Gx[i + 1][j + 1];
+                    Gy_b += image[row + i][column + j].rgbtBlue * Gy[i + 1][j + 1];
+                }
+
+            }
+            //after going through the 3x3 grid above, apply Sobel's formula
+            int sum_r = round(sqrt((Gx_r * Gx_r) + (Gy_r * Gy_r)));
+            int sum_g = round(sqrt((Gx_g * Gx_g) + (Gy_g * Gy_g)));
+            int sum_b = round(sqrt((Gx_b * Gx_b) + (Gy_b * Gy_b)));
+
+            //cap values at 255 due to that being the max of RGB values
+            if (sum_r > 255)
+            {
+                sum_r = 255;
+            }
+
+            if (sum_b > 255)
+            {
+                sum_b = 255;
+            }
+
+            if (sum_g > 255)
+            {
+                sum_g = 255;
+            }
+
+            //store the values in a temp
+            temp[row][column].rgbtRed = sum_r;
+            temp[row][column].rgbtGreen = sum_g;
+            temp[row][column].rgbtBlue = sum_b;
+        }
+    }
+
+    //transfer values from temp to the original image to show edges
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            image[i][j].rgbtBlue = temp[i][j].rgbtBlue;
+            image[i][j].rgbtGreen = temp[i][j].rgbtGreen;
+            image[i][j].rgbtRed = temp[i][j].rgbtRed;
+        }
+    }
+
+    return;
+}
+
+/* Struggled with this again as I did not understand the logic of the code at first. For this, we had to reverse an audio file. I initially thought that
+reversing meant reading each bit backwards when in fact, i had to read each block backwards (but start reading the block from the top). */
+
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "wav.h"
+
+int check_format(WAVHEADER header);
+int get_block_size(WAVHEADER header);
+
+int main(int argc, char *argv[])
+{
+    // Ensure proper usage
+    // TODO #1
+    if (argc != 3)
+    {
+        printf("2 CLA\n");
+        return 1;
+    }
+
+    // Open input file for reading
+    // TODO #2
+
+    FILE *wav = fopen(argv[1], "r");
+    if (wav == NULL)
+    {
+        printf("Try again\n");
+        return 1;
+    }
+
+    // Read header
+    // TODO #3
+    WAVHEADER header;
+    fread(&header, sizeof(WAVHEADER), 1, wav);
+
+
+    // Use check_format to ensure WAV format
+    // TODO #4
+    check_format(header);
+    if (check_format(header) == 1)
+    {
+        return 1;
+    }
+
+    // Open output file for writing
+    // TODO #5
+    FILE *output = fopen(argv[2], "w");
+    if (output == NULL)
+    {
+        return 1;
+    }
+
+    // Write header to file
+    // TODO #6
+    fwrite(&header, sizeof(WAVHEADER), 1, output);
+
+    // Use get_block_size to calculate size of block
+    // TODO #7
+    int block_size = get_block_size(header);
+
+    // Write reversed audio to file
+    // TODO #8
+    fseek(wav, 0, SEEK_END); //sets cursor to end of file
+    BYTE buffer[block_size];
+    while (ftell(wav) - block_size >= sizeof(WAVHEADER)) //need to minus to see whether we can read 1 block at a time
+    {
+        // write blocks in reverse
+        fseek(wav, -1 * block_size, SEEK_CUR); //puts cursor to the start of the last block
+        fread(&buffer, sizeof(buffer), 1, wav);
+        fwrite(&buffer, sizeof(buffer), 1, output);
+        //puts cursor to the end of the 2nd last block so that the first fseek command can put it in at the start again
+        fseek(wav, -1 * block_size, SEEK_CUR);
+    }
+
+    fclose(wav);
+    fclose(output);
+
+    //TO CLOSE: wav
+}
+
+int check_format(WAVHEADER header)
+{
+    // TODO #4
+    if (header.format[0] != 'W' && header.format[1] != 'A' && header.format[2] != 'V' && header.format[3] != 'E')
+    {
+        return 1;
+    }
+    return 0;
+}
+
+int get_block_size(WAVHEADER header)
+{
+    // TODO #7
+    int h_bytes = header.bitsPerSample / 8;
+
+    return header.numChannels * h_bytes;
+}
+
+/* One of the toughest PSET's I have done. I had to learn all about fopen() and fclose() on my own (videos, documentation, etc). I realised that I did not 
+need to specify the size of fopen() and that for sprintf() i do need to. Was quite tough and I struggled a lot. Even now, I am not 100% confident but I will
+look back at this code */
+
+//I had to read from a memory card and recover each JPEGs to a new file
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+typedef uint8_t BYTE;
+
+int main(int argc, char *argv[])
+{
+    if (argc != 2)
+    {
+        printf("Please input 1 CLA: \n");
+        return 1;
+    }
+
+    FILE *file = fopen(argv[1], "r");
+    if (file == NULL)
+    {
+        printf("Error\n");
+        return 1;
+    }
+
+    BYTE buffer[512];
+    int count = 0;
+    FILE *file_p = NULL;
+    char filename[8];
+
+    while (fread(buffer, 512, 1, file) == 1) //reads file until it terminates
+    {
+        if (buffer[0] == 0xff && buffer[1] == 0xd8 && buffer[2] == 0xff && ((buffer[3] & 0xf0) == 0xe0)) //if start of new JPEG
+        {
+            if (count > 0) //closes every file after the first
+            {
+                fclose(file_p);
+            }
+
+            sprintf(filename, "%03i.jpg", count); //renames the filename
+            file_p = fopen(filename, "w");//opens the new filename
+            count++;
+        }
+
+        if (file_p != NULL)//checks to see whether the file pointer points to an actual file
+        {
+            fwrite(buffer, 512, 1, file_p);
+        }
+    }
+
+    fclose(file_p);
+    fclose(file);
+
+}
