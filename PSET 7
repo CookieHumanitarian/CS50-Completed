@@ -1,0 +1,59 @@
+-- More practise with SQLs with significantly more difficult. I was given a dataset from IMDB consisting and had to find a few queries
+
+1. A SQL query to list the titles of all movies released in 2008
+SELECT title FROM movies
+WHERE year = 2008;
+
+2. A SQL query to determine the birth year of Emma Stone
+SELECT birth FROM people
+WHERE name = 'Emma Stone';
+
+3. A SQL query to list the titles of all movies with a release date on or after 2018, in alphabetical order.
+SELECT title FROM movies
+WHERE year >= 2018
+ORDER by title;
+
+4. A SQL query to determine the number of movies with an IMDb rating of 10.0
+SELECT COUNT(title) FROM movies
+WHERE id IN (SELECT movie_id FROM ratings
+WHERE rating = 10.0);
+
+5. A SQL query to list the titles and release years of all Harry Potter movies, in chronological order.
+SELECT title,year FROM movies
+WHERE title LIKE 'Harry Potter%'
+ORDER BY year;
+
+6. SQL query to determine the average rating of all movies released in 2012.
+SELECT AVG(rating) FROM ratings
+WHERE movie_id IN (SELECT id FROM movies WHERE year = 2012);
+
+7. A SQL query to list all movies released in 2010 and their ratings, in descending order by rating. For movies with the same rating, order them alphabetically by title.
+SELECT title, rating FROM movies
+JOIN ratings ON ratings.movie_id = movies.id
+WHERE year = 2010
+ORDER BY rating DESC, title;
+
+8. A SQL query to list the names of all people who starred in Toy Story.
+SELECT name FROM people
+WHERE id IN
+(SELECT person_id FROM stars WHERE movie_id =
+(SELECT id FROM movies WHERE title = 'Toy Story')
+);
+
+9. A SQL query to list the names of all people who starred in a movie released in 2004, ordered by birth year.
+SELECT name FROM people
+WHERE id IN (SELECT person_id FROM stars WHERE person_id IN
+(SELECT id FROM movies WHERE year = 2004)) ORDER BY (SELECT birth FROM people);
+
+10. A SQL query to list the names of all people who have directed a movie that received a rating of at least 9.0.
+SELECT DISTINCT(name) FROM people
+WHERE id IN (SELECT person_id FROM directors WHERE movie_id IN
+(SELECT movie_id FROM ratings WHERE rating >= 9.0));
+
+11. A SQL query to list the titles of the five highest rated movies (in order) that Chadwick Boseman starred in, starting with the highest rated.
+SELECT title FROM movies
+JOIN ratings ON movies.id = ratings.movie_id
+JOIN stars ON movies.id = stars.movie_id
+JOIN people ON stars.person_id = people.id
+WHERE people.id = (SELECT id FROM people WHERE name = 'Chadwick Boseman')
+ORDER BY rating DESC LIMIT 5;
