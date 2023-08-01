@@ -1,0 +1,154 @@
+/* I had to implement a program where it would read in text and check with a dictionary whether there are any typos. Really learnt a lot using hash tables
+and data structures. I had a bit of a struggle with losing a lot of memory but I eventually figured out that I was not hashing my data properly and had a 
+incompatible type conversions e.g. string to int. Finally figured it out and I am really happy that I have no memory leakages */
+
+// Implements a dictionary's functionality
+
+#include <ctype.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <ctype.h>
+
+#include "dictionary.h"
+
+int n_words = 0; //to see how many words read into the dictionary. Not a const so it can be updated anywhere
+
+// Represents a node in a hash table
+typedef struct node
+{
+    char word[LENGTH + 1];
+    struct node *next;
+}
+node;
+
+// TODO: Choose number of buckets in hash table
+const unsigned int N = 100;
+
+// Hash table
+node *table[N];
+
+// Returns true if word is in dictionary, else false
+bool check(const char *word)
+{
+    // TODO
+    int sum = 0;
+    for (int i = 0, j = strlen(word); i < j; i++) //goes through every letter in a word and sums it
+    {
+        int w = (tolower(word[i]));
+        sum += w;
+    }
+
+    sum = sum % 100; //gets the last 2 digits of the word to figure what key it is
+
+    //goes through each word in that hash value key to see whether a word exists
+    for (node *cursor = table[sum]; cursor != NULL; cursor = cursor->next)
+    {
+        char *w = cursor->word;
+
+        if (strcasecmp(word, w) == 0) //if the word exists return true
+        {
+            return true;
+        }
+    }
+
+    return false;
+
+}
+
+// Hashes word to a number
+unsigned int hash(const char *word)
+{
+    //this whole hash is to find the last 2 digits of the sum of the whole word
+    int sum = 0;
+    for (int i = 0, j = strlen(word); i < j; i++)
+    {
+        int w = (tolower(word[i]));
+        sum += w;
+    }
+
+    return sum % 100;
+}
+
+// Loads dictionary into memory, returning true if successful, else false
+bool load(const char *dictionary)
+{
+    // TODO
+    //sets each pointer to NULL in the hash table
+    for (int i = 0; i < N; i++)
+    {
+        table[i] = NULL;
+    }
+
+
+    FILE *file = fopen(dictionary, "r"); //opens dictionary pointer
+    if (file == NULL)
+    {
+        printf("Error reading file\n");
+        return false;
+    }
+
+    char word[LENGTH + 1]; //to set the word. 'LENGTH +1' to account for the NULL terminator
+
+    while (fscanf(file, "%s", word) != EOF) //scans words into word
+    {
+        node *n = malloc(sizeof(node)); //allocate memory for word
+        if (n == NULL)
+        {
+            printf("No more memory for new nodes\n");
+            fclose(file);
+            return false;
+        }
+
+        strcpy(n->word, word); //copies the word into the node
+        n->next = NULL;//sets the node pointer to NULL
+
+
+        int h = hash(n->word); //gets the hash of the current word
+
+        if (table[h] == NULL) //if this word is the first word
+        {
+                  table[h] = n;
+                  n_words++; //to see how many words we have in total to the table
+        }
+
+        else //prepends words to linked list if the word is not the first word
+        {
+            n->next = table[h]; //points to table[h] which points to the first word in that list
+            table[h] = n; //sets the table pointer to the new first word
+
+            n_words++;
+        }
+    }
+
+    fclose(file); //closes file after operations are done
+    return true;
+}
+
+// Returns number of words in dictionary if loaded, else 0 if not yet loaded
+unsigned int size(void)
+{
+    // TODO
+    return n_words; //we already counted the number of words in dictionary so just update this global variable
+}
+
+// Unloads dictionary from memory, returning true if successful, else false
+bool unload(void)
+{
+    // TODO
+    for (int i = 0; i < N; i++) //goes through each array
+    {
+         node *p = table[i]; //sets a pointer to the start of the array
+
+         while (p != NULL) //if the array is populated
+        {
+            node *temp = p; //sets a temporary pointer to p
+            p = p->next; //p goes to the next word in that array
+            free(temp); //free the temporary pointer
+        }
+
+    }
+    return true;
+}
