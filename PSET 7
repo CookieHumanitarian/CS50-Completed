@@ -57,3 +57,20 @@ JOIN stars ON movies.id = stars.movie_id
 JOIN people ON stars.person_id = people.id
 WHERE people.id = (SELECT id FROM people WHERE name = 'Chadwick Boseman')
 ORDER BY rating DESC LIMIT 5;
+
+12. A SQL query to list the titles of all movies in which both Bradley Cooper and Jennifer Lawrence starred
+SELECT title FROM movies WHERE id IN
+(SELECT movie_id FROM stars WHERE person_id IN
+(SELECT id FROM people WHERE name = 'Bradley Cooper')
+INTERSECT
+SELECT movie_id FROM stars WHERE person_id IN
+(SELECT id FROM people WHERE name = 'Jennifer Lawrence'));
+
+13. A SQL query to list the names of all people who starred in a movie in which Kevin Bacon also starred
+SELECT DISTINCT(name) FROM people
+JOIN stars ON stars.person_id = people.id
+JOIN movies ON movies.id = stars.movie_id
+WHERE movies.id IN
+(SELECT movie_id FROM stars WHERE person_id =
+(SELECT id FROM people WHERE name = 'Kevin Bacon' AND birth = 1958))
+AND name NOT IN ('Kevin Bacon');
