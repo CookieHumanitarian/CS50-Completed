@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block main %}
+    <table class = "table table-striped">
+        <thead>
+            <tr>
+                <th class="text-start">Symbol</th>
+                <th class="text-end">Shares</th>
+                <th class="text-end">Price</th>
+                <th class="text-end">Type</th>
+                <th class="text-end">Transacted</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                <th class="text-start">{{row["symbol"]}}</th>
+                <th class="text-end">{{ row["shares"]}}</th>
+                <th class="text-end">{{ row["price"] | usd }}</th>
+                <th class="text-end">{{ type[row["type"]] }}</th>
+                <th class="text-end">{{ row["time"] }}</th>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
